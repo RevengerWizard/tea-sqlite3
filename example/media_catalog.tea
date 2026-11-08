@@ -1,6 +1,9 @@
 // A small films / series / anime catalog backed by SQLite.
+
+import io
 import sqlite3
 
+const write = io.stdout.write
 const db = sqlite3.open("media.db")
 
 // Keep category names in a table so titles can refer to a valid category.
@@ -35,20 +38,29 @@ db.transaction(function() {
     add_title("anime", "Spirited Away", 2001)
 })
 
-print("Your media catalog:")
-const titles = db.query("SELECT categories.name AS category, titles.name AS title, titles.year AS year FROM titles JOIN categories ON categories.id = titles.category_id ORDER BY categories.name, titles.name")
+write("Your media catalog:\n")
+const titles = db.query(```
+SELECT DISTINCT categories.name AS category, titles.name AS title, titles.year AS year
+FROM titles
+JOIN categories ON categories.id = titles.category_id
+ORDER BY categories.name, titles.name```)
 
 for const title in titles
 {
-    print(title['category'], "|", title['title'], "(", title['year'], ")")
+    write(title['category'], "|", title['title'], "(", title['year'], ")", "\n")
 }
 
-print("Anime titles:")
-const anime = db.query("SELECT titles.name AS title, titles.year AS year FROM titles JOIN categories ON categories.id = titles.category_id WHERE categories.name = ? ORDER BY titles.name", ["anime"])
+write("Anime titles:\n")
+const anime = db.query(```
+SELECT DISTINCT titles.name AS title, titles.year AS year
+FROM titles
+JOIN categories ON categories.id = titles.category_id
+WHERE categories.name = ?
+ORDER BY titles.name```, ["anime"])
 
 for const title in anime
 {
-    print(title['title'], "(", title['year'], ")")
+    write(title['title'], "(", title['year'], ")", "\n")
 }
 
 db.close()
