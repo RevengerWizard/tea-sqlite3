@@ -12,7 +12,7 @@ The module is loaded from `sqlite3.dll` through the exported `tea_import_sqlite3
 
 ## Build
 
-Set `TEA_SRC` to the Teascript source directory that directly contains `tea.h`. The build links against `$(TEA_SRC)/lib/libtea00` and places the resulting `sqlite3.dll` in the current project directory.
+Set `TEA_SRC` to the Teascript source directory that directly contains `tea.h`. The build places the resulting `sqlite3.dll` in the current project directory.
 
 For example, from the `tea-sqlite3` directory:
 

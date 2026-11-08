@@ -4,7 +4,7 @@ TEA_SRC ?= ..\teascript
 CFLAGS ?= -O2 -Wall
 CFLAGS += -fPIC -DTEA_BUILD_AS_DLL -I"$(TEA_SRC)" -Ilib
 LDFLAGS ?= -shared
-LIBS ?= -L"$(TEA_SRC)/lib" -ltea00
+LIBS ?= -ltea00
 
 TARGET = sqlite3.dll
 OBJS = src/tea_sqlite3.o lib/sqlite3.o
