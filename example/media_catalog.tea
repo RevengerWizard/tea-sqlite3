@@ -1,0 +1,54 @@
+// A small films / series / anime catalog backed by SQLite.
+import sqlite3
+
+const db = sqlite3.open("media.db")
+
+// Keep category names in a table so titles can refer to a valid category.
+db.exec(```
+CREATE TABLE IF NOT EXISTS categories (id INTEGER PRIMARY KEY, name TEXT NOT NULL UNIQUE);
+CREATE TABLE IF NOT EXISTS titles (id INTEGER PRIMARY KEY, name TEXT NOT NULL, year INTEGER, category_id INTEGER NOT NULL REFERENCES categories(id));
+INSERT OR IGNORE INTO categories(name) VALUES ('films'), ('series'), ('anime');```)
+
+function add_title(category, name, year)
+{
+    const category_id = db.value(
+        "SELECT id FROM categories WHERE name = ?",
+        [category]
+    )
+
+    if category_id == nil
+    {
+        print("Unknown category: " + category)
+        return
+    }
+
+    db.run(
+        "INSERT INTO titles(name, year, category_id) VALUES (?, ?, ?)",
+        [name, year, category_id]
+    )
+}
+
+// Add a few sample titles. Add or change entries here as you like.
+db.transaction(function() {
+    add_title("films", "Arrival", 2016)
+    add_title("series", "Severance", 2022)
+    add_title("anime", "Spirited Away", 2001)
+})
+
+print("Your media catalog:")
+const titles = db.query("SELECT categories.name AS category, titles.name AS title, titles.year AS year FROM titles JOIN categories ON categories.id = titles.category_id ORDER BY categories.name, titles.name")
+
+for const title in titles
+{
+    print(title['category'], "|", title['title'], "(", title['year'], ")")
+}
+
+print("Anime titles:")
+const anime = db.query("SELECT titles.name AS title, titles.year AS year FROM titles JOIN categories ON categories.id = titles.category_id WHERE categories.name = ? ORDER BY titles.name", ["anime"])
+
+for const title in anime
+{
+    print(title['title'], "(", title['year'], ")")
+}
+
+db.close()
