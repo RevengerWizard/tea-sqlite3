@@ -1,6 +1,6 @@
 # Set TEA_SRC to the Teascript source directory (the one containing src/tea.h).
+
 CC ?= gcc
-TEA_SRC ?= ..\teascript
 CFLAGS ?= -O2 -Wall
 CFLAGS += -fPIC -DTEA_BUILD_AS_DLL -I"$(TEA_SRC)" -Ilib
 LDFLAGS ?= -shared
