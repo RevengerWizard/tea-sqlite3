@@ -7,6 +7,8 @@ LDFLAGS ?= -shared
 LIBS ?= -ltea00
 
 TARGET = sqlite3.dll
+STRIP = strip --strip-unneeded
+
 OBJS = src/tea_sqlite3.o lib/sqlite3.o
 
 .PHONY: all clean install
@@ -19,6 +21,8 @@ all: $(TARGET)
 $(TARGET): $(OBJS)
 	$(E) "LINK          $@"
 	$(Q)$(CC) $(LDFLAGS) -o $@ $(OBJS) $(LIBS)
+	$(E) "STRIP         $@"
+	$(Q)$(STRIP) $@
 
 src/tea_sqlite3.o: src/tea_sqlite3.c lib/sqlite3.h
 	$(E) "CC            $@"
